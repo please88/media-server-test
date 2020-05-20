@@ -9,6 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 
 typedef struct _flv_hls_fmp4_param{
     hls_fmp4_t* hls;
@@ -109,6 +113,13 @@ int main(int argc, char* argv[])
     if(argc < 2){
         printf("input flv file\n");
         return -1;
+    }
+
+    if(access("out-fmp4/", 0) < 0){
+        if(mkdir("out-fmp4/", S_IRWXU) < 0){
+            perror("mkdir error");
+            return -1;
+        }
     }
 
     hls_segmenter_flv(argv[1]);

@@ -9,6 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 
 static int hls_handler(void* m3u8, const void* data, size_t bytes, int64_t pts, int64_t dts, int64_t duration)
 {
@@ -92,6 +96,13 @@ int main(int argc, char* argv[])
     if(argc < 2){
         printf("input flv file\n");
         return -1;
+    }
+
+    if(access("out-ts/", 0) < 0){
+        if(mkdir("out-ts/", S_IRWXU) < 0){
+            perror("mkdir error");
+            return -1;
+        }
     }
 
     hls_segmenter_flv(argv[1]);
